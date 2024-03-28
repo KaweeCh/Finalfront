@@ -40,6 +40,14 @@ export interface imageUser {
   rankDifferent: number;
 }
 
+export interface ImageRandom {
+  userID: number;
+  imageID: number;
+  url: string;
+  username: string;
+  count: number;
+}
+
 export interface rankID {
   imageID : number;
   rankDiff : number;

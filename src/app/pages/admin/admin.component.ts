@@ -48,6 +48,8 @@ export class AdminComponent {
     console.log(this.shareData.userData);
     this.user = await this.api.getUserMember();
     this.imgCount = await this.api.getImageCount();
+
+   
     console.log('user admin:', this.shareData.userData);
     if(!this.shareData.userData){
       this.router.navigate(['/login']);
@@ -101,6 +103,12 @@ export class AdminComponent {
 
   navigateTop() {
     this.router.navigate(['/top10']);
+  }
+
+  Change(time : any) {
+    const Time = parseInt(time);
+   const result = this.api.updateTime(Time);
+    alert("update time success");
   }
 }
 

@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { count, lastValueFrom } from 'rxjs';
 import {
   ImageCount,
+  ImageRandom,
   Register,
   Statistic,
   User,
@@ -178,6 +179,25 @@ export class ApiService {
     this.http.put(this.url + '/images/' + id, body).subscribe();
   }
 
+  public async getTime() {
+      const response = await lastValueFrom(
+        this.http.get(this.url + '/time')
+      );
+      return response;
+  }
+
+  public async updateTime(time: number) {
+    let body = {
+      time: time,
+    };
+    const response = await lastValueFrom(
+      this.http.post(this.url + '/time', body)
+    ); 
+
+    return response;
+   
+  }
+
   public async getStatistic(imageID: number, day: number) {
     try {
       const response = await lastValueFrom(
@@ -208,6 +228,17 @@ export class ApiService {
       this.http.put(`${this.url}/users/${userID}`, update[0])
     );
 
+    return response;
+  }
+
+
+  public async randomImage(userID : number){
+
+    const response = await lastValueFrom(
+      this.http.get<ImageRandom[]>(`${this.url}/images/random/${userID}`)
+     
+    );
+   
     return response;
   }
 }

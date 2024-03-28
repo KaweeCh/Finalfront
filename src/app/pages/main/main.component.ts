@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActivatedRoute } from '@angular/router';
-import { User, imageUpload, imageUser } from '../../model/model';
+import { ImageRandom, User, imageUpload, imageUser } from '../../model/model';
 import { ApiService } from '../../services/api-service';
 import { ShareService } from '../../services/share.service';
 import { Router } from '@angular/router';
@@ -38,22 +38,20 @@ export class MainComponent implements OnInit {
   ) {}
 
   id: any;
-  leftImage: any;
-  rightImage: any;
+
+  imageRandom : ImageRandom[] = [];
+  leftImage: ImageRandom | undefined;
+  rightImage: ImageRandom | undefined;
   K_FACTOR: number = 32;
-  userData1: User | undefined;
-  userData2: User | undefined;
-  public images: imageUser[] = [];
+  // public images: imageUser[] = [];
   canVote = true;
   isCD = true;
   httpError: boolean = false;
   leftImageError: boolean = false;
-
+  login : boolean = false;
   async ngOnInit() {
     this.id = localStorage.getItem('userID');
     this.checkData();
-    this.images = await this.api.getImage();
-   
     this.loadImages();
 
     $('.toggle').click(function (e: JQuery.Event) {
@@ -63,6 +61,13 @@ export class MainComponent implements OnInit {
     if(this.shareData.userData?.type == 'owner'){
       this.router.navigate(['/login']);
     }
+
+    if(this.shareData.userData){
+      this.login = true;
+    }else{
+      this.login = false;
+    }
+    
     console.log(this.shareData.userData);
   }
 
@@ -87,92 +92,51 @@ export class MainComponent implements OnInit {
     if (!localStorage.getItem('userData')) {
       this.shareData.userData = await this.api.getUserbyId(this.id);
       localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
+    
       // console.log(this.shareData.userData);
     }
   }
 
   async loadImages() {
-    if (this.images && this.images.length >= 2) {
-      this.canVote = true;
-      const randomIndex1 = Math.floor(Math.random() * this.images.length);
-      let randomIndex2 = Math.floor(Math.random() * this.images.length);
-
-      while (
-        randomIndex2 === randomIndex1 ||
-        this.images[randomIndex2].imageID === this.leftImage?.imageID ||
-        this.images[randomIndex2].imageID === this.rightImage?.imageID
-      ) {
-        randomIndex2 = Math.floor(Math.random() * this.images.length);
-      }
-
-      this.leftImage = this.images[randomIndex1];
-      this.rightImage = this.images[randomIndex2];
-    } else {
-      this.canVote = false;
-    }
-
-    const [userData1, userData2] = await Promise.all([
-      this.api.getUserbyId(this.leftImage.userID),
-      this.api.getUserbyId(this.rightImage.userID),
-    ]);
-
-    this.userData1 = userData1;
-    this.userData2 = userData2;
-  }
-
-  async reshuffleImages(winner: imageUser, loser: imageUser) {
-    const { plus, minus } = await this.calrating(winner, loser);
-    if (this.isCD) {
-      this.isCD = false;
-      if (!$('.toggle').hasClass('toggle-on')) {
-        const dialogRef = this.dialog.open(DialogComponent, {
-          width: '900px',
-          data: {
-            winner: winner,
-            loser: loser,
-            winnerOldScore: winner.count,
-            loserOldScore: loser.count,
-            winnerExpectedScore: this.calculateExpectedScore(
-              winner.count,
-              loser.count,
-              winner.imageID.toString(),
-              loser.imageID.toString()
-            ),
-            loserExpectedScore: this.calculateExpectedScore(
-              loser.count,
-              winner.count,
-              loser.imageID.toString(),
-              winner.imageID.toString()
-            ),
-            plus: plus,
-            minus: minus,
-          },
-        });
-
-        dialogRef.afterClosed().subscribe((result) => {
-          this.chooseRandomImages(winner, loser);
-          this.loadImages();
-          if (this.canVote) {
-            this.calrating(winner, loser);
-          }
-          setTimeout(() => {
-            this.isCD = true;
-          }, 1000);
-        });
-      } else {
-        this.chooseRandomImages(winner, loser);
-        this.loadImages();
-        if (this.canVote) {
-          this.calrating(winner, loser);
+    if (this.id) {
+        const imageRandom = await this.api.randomImage(this.id);
+        if (imageRandom) {
+            this.imageRandom = imageRandom;
         }
-        setTimeout(() => {
-          this.isCD = true;
-        }, 1000);
-      }
+    } else {
+        const machineId = await this.getMachineId();
+        const imageRandom = await this.api.randomImage(machineId);
+        this.imageRandom = imageRandom;
     }
-  }
+}
 
-  async calrating(winner: imageUser, loser: imageUser) {
+async getMachineId() {
+    const dataToHash = `${navigator.userAgent}${navigator.platform}`;
+    const encoder = new TextEncoder();
+    const dataBuffer = encoder.encode(dataToHash);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+    const hashBigInt = BigInt('0x' + Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join(''));
+    const machineId = parseInt(hashBigInt.toString().slice(0, 9));
+
+    return machineId;
+}
+
+async reshuffleImages(winner: ImageRandom, loser: ImageRandom) {
+  if (this.canVote) {
+ 
+    this.canVote = false;
+    await this.loadImages(); // รอให้โหลดรูปภาพเสร็จสมบูรณ์
+    const ratings =  await this.calrating(winner, loser); // คำนวณคะแนน Elo สำหรับรูปภาพ
+    console.log(ratings);
+    setTimeout(() => {
+      this.canVote = true;
+    }, 2000); // 2 วินาที
+  }
+}
+
+  
+
+  async calrating(winner: ImageRandom, loser: ImageRandom) {
     const winnerEloRating = winner.count;
     const loserEloRating = loser.count;
 
@@ -293,41 +257,41 @@ export class MainComponent implements OnInit {
   countdownDuration: number = 10; // Set the countdown duration in seconds
   countdownInterval: any;
 
-  chooseRandomImages(select: imageUser, select2: imageUser) {
-    const foundItemIndex = this.images.findIndex(
-      (item) => item.imageID === select.imageID
-    );
+  // chooseRandomImages(select: imageUser, select2: imageUser) {
+  //   const foundItemIndex = this.images.findIndex(
+  //     (item) => item.imageID === select.imageID
+  //   );
 
-    const foundItemIndex2 = this.images.findIndex(
-      (item) => item.imageID === select2.imageID
-    );
+  //   const foundItemIndex2 = this.images.findIndex(
+  //     (item) => item.imageID === select2.imageID
+  //   );
 
-    if (foundItemIndex !== -1 && foundItemIndex2 !== -1) {
-      const chosenImage = this.images.splice(foundItemIndex, 1)[0];
-      const chosenImage2 = this.images.splice(foundItemIndex2, 1)[0];
-      // console.log('Removed images after vote:', chosenImage, chosenImage2);
-      // console.log('all', this.images);
+  //   if (foundItemIndex !== -1 && foundItemIndex2 !== -1) {
+  //     const chosenImage = this.images.splice(foundItemIndex, 1)[0];
+  //     const chosenImage2 = this.images.splice(foundItemIndex2, 1)[0];
+  //     // console.log('Removed images after vote:', chosenImage, chosenImage2);
+  //     // console.log('all', this.images);
 
-      if (this.images.length === 2) {
-        this.canVote = false; // Disable further voting when only two images are left
+  //     if (this.images.length === 2) {
+  //       this.canVote = false; // Disable further voting when only two images are left
 
-        // Start the countdown
-        this.countdownInterval = setInterval(() => {
-          this.countdownDuration--;
+  //       // Start the countdown
+  //       this.countdownInterval = setInterval(() => {
+  //         this.countdownDuration--;
 
-          if (this.countdownDuration === 0) {
-            clearInterval(this.countdownInterval);
-            this.images.push(chosenImage, chosenImage2);
-            console.log('Array after addition:', this.images);
-            this.canVote = true;
-            this.countdownDuration = 10; // Reset the countdown duration
-          }
-        }, 10);
-      }
-    } else {
-      console.log(
-        `Item with imageID ${select.imageID} or ${select2.imageID} not found in the array.`
-      );
-    }
-  }
+  //         if (this.countdownDuration === 0) {
+  //           clearInterval(this.countdownInterval);
+  //           this.images.push(chosenImage, chosenImage2);
+  //           console.log('Array after addition:', this.images);
+  //           this.canVote = true;
+  //           this.countdownDuration = 10; // Reset the countdown duration
+  //         }
+  //       }, 10);
+  //     }
+  //   } else {
+  //     console.log(
+  //       `Item with imageID ${select.imageID} or ${select2.imageID} not found in the array.`
+  //     );
+  //   }
+  // }
 }

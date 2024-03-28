@@ -48,6 +48,7 @@ export class LoginComponent {
 
     if (foundUser) {
       if (password === foundUser.password) {
+         localStorage.setItem('userID', JSON.stringify(foundUser.userID));
         // Check if the user is an owner or a regular user
         if (foundUser.type === 'owner') {
           this.navigateToAdmin(foundUser.userID);
@@ -55,7 +56,7 @@ export class LoginComponent {
         } else {
           this.navigateToMain();
         }
-        localStorage.setItem('userID', JSON.stringify(foundUser.userID));
+       
       } else {
         this.loginError = 'Incorrect password.';
       }

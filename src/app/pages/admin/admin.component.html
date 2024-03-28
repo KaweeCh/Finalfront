@@ -41,6 +41,12 @@
                             <th scope="col" class="table-header">Name</th>
                             <th scope="col" class="table-header">Email</th>
                             <th scope="col" class="table-header">Amount Picture</th>
+                            <th scope="col" class="table-header">
+                                Cooldown Time :
+                                <input type="number" style="width: 50px;" #time>
+                                <button class="timebutton" (click)="Change(time.value)">OK</button>
+                              </th>
+                            
                             <th class="table-header"></th>
                         </tr>
                     </thead>
