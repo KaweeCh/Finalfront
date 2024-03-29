@@ -89,6 +89,7 @@
                 </div>
             </div>
             <div class="text-container">
+                ID: <span class="vote-score">{{imageUrl.imageID}}</span>
                 Score: <span class="vote-score">{{imageUrl.voteScore}}</span>
                 <div class="arrow-icon">
                     <img *ngIf="imageUrl.rankDiff > 0" src="../../../../assets/Image/arrow-up.png" alt="Rank Up">
@@ -107,9 +108,12 @@
                 <img [src]="imageUrl.url" alt="Image">
                 <div class="rank-container">
                     <img [src]="getRankIconImages(i + 4)" alt="Rank Icon">
+               
                 </div>
+                
             </div>
             <div class="text-container">
+                ID: <span class="vote-score">{{imageUrl.imageID}}</span>
                 Score: <span class="vote-score">{{imageUrl.voteScore}}</span>
                 <div class="arrow-icon">
                     <img *ngIf="imageUrl.rankDiff > 0" src="../../../../assets/Image/arrow-up.png" alt="Rank Up">
@@ -127,9 +131,10 @@
             <div class="item" *ngFor="let imageUrl of rank.slice(3,rank.length); let i = index">
                 <div class="image-container">
                     <img [src]="imageUrl.url" alt="Image">
+                  
                     <div class="rank-container">
-                        <img [src]="getRankIconImages(i + 4)" alt="Rank Icon">
-                    </div>
+                        {{ i + 4 }}
+                    </div>                 
                 </div>
                 <div class="text-container">
                     Score: <span class="vote-score">{{imageUrl.voteScore}}</span>

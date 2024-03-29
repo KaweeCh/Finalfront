@@ -1,72 +1,84 @@
 * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
-    background-color: #ececec;
-    font-family: "Anonymous Pro", monospace;
-  }
-  
-  .container {
-    width: 50%;
-    height: 100%;
-    background-color: #ececec;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-  }
-  
-  .pic {
-    width: 35%;
-    height: 95%;
-    overflow: hidden;
-    background-image: url("https://pbs.twimg.com/media/GEf4xT_WQAARRO4?format=png&name=900x900");
-    background-size: cover;
-    background-position: center;
-    border-radius: 15px;
-  }
-  
-  .H_text {
-    font-size: 16px;
-    text-align: left;
-    padding: 20px 0;
-  }
-  
-  * {
-    --mdc-outlined-text-field-outline-color: black !important;
-    --mdc-outlined-text-field-hover-outline-color: black !important;
-    --mdc-outlined-text-field-focus-outline-color: black !important;
-  }
-  
-  .inp {
-    width: 400px;
-    height: 50px;
-    max-height: 50px;
-    min-height: 50px;
-    display: flex;
-    align-items: center;
-    position: relative;
-  }
-  
-  .custom-button {
-      margin-top: 10px;
-      width: 400px;
-      height: 40px;
-      background-color: #162D3A !important;
-      color: white !important;
-  }
-  
-  .sign-up-link {
-      color: #3366cc; /* Set the desired color for the link */
-      text-decoration: none; /* Remove underline */
-      cursor: pointer;
-  }
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: #ececec;
+  font-family: "Anonymous Pro", monospace;
+}
+
+.container {
+  width: 50%;
+  height: 100%;
+  background-color: #ececec;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.pic {
+  width: 35%;
+  height: 95%;
+  overflow: hidden;
+  background-image: url("https://pbs.twimg.com/media/GEf4xT_WQAARRO4?format=png&name=900x900");
+  background-size: cover;
+  background-position: center;
+  border-radius: 15px;
+}
+
+.H_text {
+  font-size: 16px;
+  text-align: left;
+  padding: 20px 0;
+}
+
+* {
+  --mdc-outlined-text-field-outline-color: black !important;
+  --mdc-outlined-text-field-hover-outline-color: black !important;
+  --mdc-outlined-text-field-focus-outline-color: black !important;
+}
+
+.inp {
+  width: 400px;
+  height: 50px;
+  max-height: 50px;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.custom-button {
+  margin-top: 10px;
+  width: 400px;
+  height: 40px;
+  background-color: #162d3a !important;
+  color: white !important;
+}
+
+.custom-bt {
+  font-family: "Anonymous Pro", monospace;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  transition: 0.2s ease;
+}
+
+.custom-bt:hover {
+  transform: scale(1.1);
+}
+
+.sign-up-link {
+  color: #3366cc; /* Set the desired color for the link */
+  text-decoration: none; /* Remove underline */
+  cursor: pointer;
+}

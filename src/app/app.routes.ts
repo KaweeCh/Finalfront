@@ -6,7 +6,7 @@ import { ProfileComponent } from './pages/main/profile/profile.component';
 import { Top10Component } from './pages/main/top10/top10.component';
 import { ChartComponent } from './pages/main/chart/chart.component';
 import { AdminComponent } from './pages/admin/admin.component';
-import { ViewProfileComponent } from './pages/view-profile/view-profile.component';
+import { ViewProfileComponent } from './pages/main/view-profile/view-profile.component';
 
 export const routes: Routes = [
   { path: '', component: MainComponent}, // Redirect empty path to login

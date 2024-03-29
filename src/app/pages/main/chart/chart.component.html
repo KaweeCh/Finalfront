@@ -32,7 +32,7 @@
         <div>
             <div class="button_fx" *ngIf="userData">
                 <div class="profile-picture">
-                    <img logo (click)="navigateToAdmin()" src="{{userData.image}}" alt="icon" />
+                    <img logo src="{{userData.image}}" alt="icon" />
                 </div>
                 <button mat-flat-button type="submit" color="basic" class="mat-bt logout" (click)="navigateToLogin()">
                     <mat-icon>exit_to_app</mat-icon>

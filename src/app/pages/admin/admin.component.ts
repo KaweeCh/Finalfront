@@ -27,7 +27,6 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrl: './admin.component.scss',
 })
 export class AdminComponent {
-
   user: User[] = [];
   imgCount: ImageCount[] = [];
   id: any;
@@ -39,8 +38,7 @@ export class AdminComponent {
     protected shareData: ShareService,
     protected api: ApiService,
     private router: Router
-  ) {
-  }
+  ) {}
 
   async ngOnInit() {
     this.id = localStorage.getItem('userID');
@@ -49,6 +47,12 @@ export class AdminComponent {
     this.user = await this.api.getUserMember();
     this.imgCount = await this.api.getImageCount();
 
+    this.user.forEach(user => {
+        const userImgCount = this.imgCount.find(item => item.userID === user.userID);
+        if (!userImgCount) {
+            this.imgCount.push({ userID: user.userID, image_count: 0 });
+        }
+    });
    
     console.log('user admin:', this.shareData.userData);
     if(!this.shareData.userData){
@@ -56,7 +60,8 @@ export class AdminComponent {
     }
     console.log('users:', this.user);
     console.log('imgCount:', this.imgCount);
-  }
+}
+
 
   checkData() {
     const userDataString = localStorage.getItem('userData');
@@ -66,7 +71,6 @@ export class AdminComponent {
     } else {
       this.loadData();
     }
-
   }
   async loadData() {
     if (!this.id) {
@@ -105,10 +109,14 @@ export class AdminComponent {
     this.router.navigate(['/top10']);
   }
 
-  Change(time : any) {
+  Change(time: any) {
     const Time = parseInt(time);
-   const result = this.api.updateTime(Time);
-    alert("update time success");
+    const result = this.api.updateTime(Time);
+    alert('update time success');
+  }
+
+  getImageCount(userID: number): number {
+    const userImgCount = this.imgCount.find((item) => item.userID === userID);
+    return userImgCount ? userImgCount.image_count : 0;
   }
 }
-

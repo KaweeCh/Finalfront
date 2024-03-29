@@ -44,38 +44,16 @@ export class ChartComponent {
   ) {}
 
   async ngOnInit() {
-    this.checkData();
     this.checkLogin();
     const userDataString = localStorage.getItem('userData');
     this.userData = userDataString ? JSON.parse(userDataString) : null;
     this.id = this.route.snapshot.paramMap.get('id');
-    this.statistics = await this.api.getStatistic(this.id, 7);
+    await this.updateStatistics(); // เพิ่มการอัปเดตข้อมูลสถิติก่อนสร้างกราฟ
     this.createChart();
   }
 
-  checkData() {
-    const userDataString = localStorage.getItem('userData');
-    if (userDataString) {
-      try {
-        const userData = JSON.parse(userDataString);
-        this.shareData.userData = userData;
-      } catch (error) {
-        console.error('Error parsing userData from localStorage:', error);
-        this.loadData();
-      }
-    } else {
-      this.loadData();
-    }
-  }
-  async loadData() {
-    if (!this.id) {
-      return;
-    }
-    if (!localStorage.getItem('userData')) {
-      this.shareData.userData = await this.api.getUserbyId(this.id);
-      localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
-      console.log(this.shareData.userData);
-    }
+  async updateStatistics() {
+    this.statistics = await this.api.getStatistic(this.id, 7);
   }
 
   checkLogin() {
@@ -107,41 +85,9 @@ export class ChartComponent {
     this.router.navigate(['/profile']);
   }
 
-  navigateToAdmin() {
-    this.router.navigate(['/admin/' + this.userData.userID]);
-  }
-
   navigateTop() {
     this.router.navigate(['/top10']);
   }
-
-  // createChart() {
-  //   const date = new Date();
-  //   const year = date.getFullYear();
-  //   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
-  //   const day = date.getDate().toString().padStart(2, '0');
-  //   this.chart = new Chart("MyChart", {
-  //     type: 'line',
-  //     data: {
-  //       labels: [`${year}-${month}-${day}`, `${year}-${month}-${day}`, '2022-05-12', '2022-05-13',
-  //         '2022-05-15', '2022-05-16', '2022-05-17',],
-  //       datasets: [
-  //         {
-  //           label: "Score",
-  //           data: ['467', '576', '572', '79', '92',
-  //             '574', '573', '576'],
-  //           backgroundColor: 'blue'
-  //         },
-  //       ]
-  //     },
-  //     options: {
-  //       aspectRatio: 0.6,
-  //       responsive: true,
-  //       maintainAspectRatio: false,
-  //     },
-
-  //   });
-  // }
 
   createChart() {
     const currentDate = new Date();
@@ -149,13 +95,18 @@ export class ChartComponent {
     const data = [];
     const pointRadius = 5;
     for (let i = 6; i >= 0; i--) {
-      const date = new Date(currentDate);
-      date.setDate(currentDate.getDate() - i);
+      const currentDateMinusDays = new Date(currentDate);
+      currentDateMinusDays.setDate(currentDate.getDate() - i);
 
       labels.push(
-        `${date.getFullYear()}-${(date.getMonth() + 1)
+        `${currentDateMinusDays.getFullYear()}-${(
+          currentDateMinusDays.getMonth() + 1
+        )
           .toString()
-          .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+          .padStart(2, '0')}-${currentDateMinusDays
+          .getDate()
+          .toString()
+          .padStart(2, '0')}`
       );
     }
 
@@ -163,9 +114,8 @@ export class ChartComponent {
       const currentDateMinusDays = new Date(currentDate);
       currentDateMinusDays.setDate(currentDate.getDate() - i);
 
-      // Check if there is data for the current date
       const dataForCurrentDate = this.statistics.find((statistic) => {
-        const statisticDate = new Date(statistic.date); // Assuming 'date' is the property in your Statistic model that contains the date
+        const statisticDate = new Date(statistic.date);
         return (
           currentDateMinusDays.getFullYear() === statisticDate.getFullYear() &&
           currentDateMinusDays.getMonth() === statisticDate.getMonth() &&
@@ -176,11 +126,14 @@ export class ChartComponent {
       if (dataForCurrentDate) {
         data.push(dataForCurrentDate.voteScore);
       } else {
-        data.push(0);
+        // หากไม่มีข้อมูลสถิติสำหรับวันที่ปัจจุบันให้ใช้คะแนนของภาพใหม่ที่ถูกอัปโหลดขึ้นมา
+        const uploadedImageScore = 1000; // ตั้งค่าคะแนนของภาพที่ถูกอัปโหลดใหม่
+        data.push(uploadedImageScore);
       }
     }
 
-    console.error(data);
+    console.error('Labels:', labels);
+    console.error('Data:', data);
 
     this.chart = new Chart('MyChart', {
       type: 'line',

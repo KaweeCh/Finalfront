@@ -1,91 +1,93 @@
 <mat-toolbar class="fxLayout-dark" *ngIf="shareData.userData !== undefined; else guestToolbar">
     <!-- Content of the toolbar when shareData.userData is defined -->
     <div class="fxLayout" (click)="navigateToMain()">
-      <img logo src="assets/Image/log_View.png" alt="icon" />
-      <span>View</span>
-    </div>
-    <div>
-      <div class="button_fx">
-        <div class="profile-picture">
-          <img logo (click)="navigateProfile()" src="{{shareData.userData.image}}" alt="icon" />
-        </div>
-        <div class="logo-container">
-          <button (click)="navigateTop()" mat-button color="basic" class="bt-span">
-            <mat-icon class="icon-margin">emoji_events</mat-icon>
-            Top10
-          </button>
-        </div>
-  
-        <button mat-flat-button type="submit" color="basic" class="mat-bt logout" (click)="navigateToLogin()">
-          <mat-icon>exit_to_app</mat-icon>
-          Logout
-        </button>
-      </div>
-    </div>
-  </mat-toolbar>
-  
-  <ng-template #guestToolbar>
-    <!-- Content of the toolbar when shareData.userData is undefined -->
-    <mat-toolbar class="fxLayout-dark">
-      <div class="fxLayout">
         <img logo src="assets/Image/log_View.png" alt="icon" />
         <span>View</span>
-      </div>
-      <div class="button_fx">
-        <div class="profile-picture">
-          <img logo (click)="navigateToMain()" src="../../../assets/Image/catavatar.png" alt="icon" />
+    </div>
+    <div>
+        <div class="button_fx">
+            <div class="profile-picture">
+                <img logo (click)="navigateProfile()" src="{{shareData.userData.image}}" alt="icon" />
+            </div>
+            <div class="logo-container">
+                <button (click)="navigateTop()" mat-button color="basic" class="bt-span">
+                    <mat-icon class="icon-margin">emoji_events</mat-icon>
+                    Top10
+                </button>
+            </div>
+
+            <button mat-flat-button type="submit" color="basic" class="mat-bt logout" (click)="navigateToLogin()">
+                <mat-icon>exit_to_app</mat-icon>
+                Logout
+            </button>
         </div>
-        <div class="logo-container">
-          <button (click)="navigateTop()" mat-button color="basic" class="bt-span">
-            <mat-icon class="icon-margin">emoji_events</mat-icon>
-            Top10
-          </button>
+    </div>
+</mat-toolbar>
+
+<ng-template #guestToolbar>
+    <!-- Content of the toolbar when shareData.userData is undefined -->
+    <mat-toolbar class="fxLayout-dark">
+        <div class="fxLayout">
+            <img logo src="assets/Image/log_View.png" alt="icon" />
+            <span>View</span>
         </div>
-  
-        <button mat-flat-button type="submit" class="login" color="basic" (click)="navigateToLogin()">
-          <mat-icon class="icon-margin">login</mat-icon>
-          Sign In
-        </button>
-  
-        <button mat-flat-button type="submit" class="signout" color="basic" (click)="navigateToSignUp()">
-          <mat-icon class="icon-margin">person_add</mat-icon>
-          Sign Up
-        </button>
-      </div>
+        <div class="button_fx">
+            <div class="profile-picture">
+                <img logo (click)="navigateToMain()" src="../../../assets/Image/catavatar.png" alt="icon" />
+            </div>
+            <div class="logo-container">
+                <button (click)="navigateTop()" mat-button color="basic" class="bt-span">
+                    <mat-icon class="icon-margin">emoji_events</mat-icon>
+                    Top10
+                </button>
+            </div>
+
+            <button mat-flat-button type="submit" class="login" color="basic" (click)="navigateToLogin()">
+                <mat-icon class="icon-margin">login</mat-icon>
+                Sign In
+            </button>
+
+            <button mat-flat-button type="submit" class="signout" color="basic" (click)="navigateToSignUp()">
+                <mat-icon class="icon-margin">person_add</mat-icon>
+                Sign Up
+            </button>
+        </div>
     </mat-toolbar>
-  </ng-template>
-  
+</ng-template>
+
 
 <ng-container *ngIf="imageRandom; else loadingImages">
     <div class="vote-con">
-        <h1 *ngIf="canVote; else cantvote" style="color: rgb(61, 255, 47); font-weight: bold;">Canvote</h1>
-        <ng-template #cantvote ><h1  style="color: rgb(255, 0, 0); font-weight: bold;">Please wait a second For vote...</h1></ng-template>
+        <h1 *ngIf="canVote; else cantvote" style="color: green; font-weight: bold;">Canvote</h1>
+        <ng-template #cantvote>
+            <h1 style="color: rgb(255, 0, 0); font-weight: bold;">Please wait a second For vote...</h1>
+        </ng-template>
     </div>
-   
+
+
     <div class="img-con">
-      <div class="item">
-        <img [src]="imageRandom[0].url" alt="" (click)="reshuffleImages(imageRandom[0], imageRandom[1])">
-        <h3>Image ID : {{imageRandom[0].imageID}}</h3>
-        <h3>
-          view by&nbsp; <span *ngIf="shareData.userData;" (click)="navigateToUserProfile(imageRandom[0].userID)">{{ imageRandom[0].username }}</span>
-          <mat-icon style="color: red;">favorite</mat-icon>
-          {{ imageRandom[0].count || 0 || 'No votes' }}
-        </h3>
-      </div>
-      <div class="item">
-        <img [src]="imageRandom[1]?.url" alt="" (click)="reshuffleImages(imageRandom[1], imageRandom[0])">
-        <h3>Image ID : {{imageRandom[1].imageID}}</h3>
-        <h3>
-          view by&nbsp; <span *ngIf="shareData.userData;" (click)="navigateToUserProfile(rightImage?.userID)">{{ imageRandom[1].username }}</span>
-          <mat-icon style="color: red;">favorite</mat-icon>
-          {{ imageRandom[1].count || 0 || 'No votes' }}
-        </h3>
-      </div>
+        <div class="item">
+            <img [src]="imageRandom[0].url" alt="" (click)="reshuffleImages(imageRandom[0], imageRandom[1])">
+            <h3>Image ID : {{imageRandom[0].imageID}}</h3>
+            <h3>
+                view by&nbsp; <span *ngIf="shareData.userData;"
+                    (click)="navigateToUserProfile(imageRandom[0].userID)">{{ imageRandom[0].username }}</span>
+                <mat-icon style="color: red;">favorite</mat-icon>
+                {{ imageRandom[0].count || 0 || 'No votes' }}
+            </h3>
+        </div>
+        <div class="item">
+            <img [src]="imageRandom[1].url" alt="" (click)="reshuffleImages(imageRandom[1], imageRandom[0])">
+            <h3>Image ID : {{imageRandom[1].imageID}}</h3>
+            <h3>
+                view by&nbsp; <span *ngIf="shareData.userData;" (click)="navigateToUserProfile(imageRandom[1].userID)">{{
+                    imageRandom[1].username }}</span>
+                <mat-icon style="color: red;">favorite</mat-icon>
+                {{ imageRandom[1].count || 0 || 'No votes' }}
+            </h3>
+        </div>
     </div>
-  </ng-container>
-  
-
-
+</ng-container>
 
 <ng-template #loadingImages>
 
@@ -99,5 +101,6 @@
 </ng-template>
 
 <ng-template #waitForVote>
-    <h1 style="display: flex; justify-content: center; align-items: center; font-family: Anonymous Pro, monospace;">Wait For Image Cooldown</h1>
+    <h1 style="display: flex; justify-content: center; align-items: center; font-family: Anonymous Pro, monospace;">Wait
+        For Image Cooldown</h1>
 </ng-template>

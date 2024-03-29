@@ -67,9 +67,9 @@
                             </td>
 
                             <ng-container *ngFor="let imgCountItem of imgCount">
-                                <td class="table-data" *ngIf="imgCountItem.userID == member.userID">
+                                <td class="table-data" *ngIf="imgCountItem && imgCountItem.userID == member.userID">
                                     {{ imgCountItem.image_count }}
-                                </td>
+                                </td>                                
                             </ng-container>
                             <td class="text-end">
                                 <a class="btn btn-sm btn-neutral"(click)="navigateToViewProfile(member.userID)">View</a>

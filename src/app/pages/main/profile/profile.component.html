@@ -26,9 +26,7 @@
     <h1>User Profile</h1>
     <div class="img-con">
         <div class="item">
-            <input #inputField hidden type="file" (change)="uploadProfileImage($event)"
-                (click)="inputField.value = ''" />
-            <img class="logo" src="{{userData?.image}}" alt="image" (click)="inputField.click()">
+            <img class="logo" src="{{userData?.image}}" alt="image">
             <div class="detail">
                 <span class="Username">{{userData?.username}}</span>
                 <div class="user-info">
@@ -84,36 +82,28 @@
             <div class="container">
                 <div class="picvote1" [ngClass]="{'single-image': images.length === 1}">
                     <div class="image-wrapper" *ngFor="let image of images">
-                        <!-- <div class="image-rank">
-                            <div>
-                                <img src="../../../../assets/Image/arrow-up.png" alt="Rank Up">
-                                <img *ngIf="imageUrl.rankDiff < 0" src="../../../../assets/Image/arrow-down.png"
-                                    alt="Rank Down">
-                                <img *ngIf="imageUrl.rankDiff === 0" src="../../../../assets/Image/NoUpDown.png"
-                                    alt="No Rank">
-                            </div>
-                            <span class="rank-ud"
-                                [ngStyle]="{'color': imageUrl.rankDiff < 0 ? 'red' : (imageUrl.rankDiff > 0 ? 'green' : 'blue')}">{{imageUrl.rankDiff}}</span>
-                        </div> -->
-
-                        <div class="image-overlay">
-                            <div *ngFor="let rank of rank" class="rank">
-                                <div *ngIf="rank.imageID === image.imageID">
-                                    <i [ngClass]="{'green-text': rank.rankDiff > 0, 'red-text': rank.rankDiff < 0, 'blue-text': rank.rankDiff === 0}">{{rank.rankDiff}}</i>
-
+                        <div *ngFor="let rank of rank" class="image-rank">
+                            <div *ngIf="rank.imageID === image.imageID" class="text-container">
+                                <div class="arrow-icon">
+                                    <img *ngIf="rank.rankDiff < 0" src="../../../../assets/Image/arrow-down.png" />
+                                    <img *ngIf="rank.rankDiff > 0" src="../../../../assets/Image/arrow-up.png" />
+                                    <img *ngIf="rank.rankDiff === 0" src="../../../../assets/Image/NoUpDown.png" />
                                 </div>
+                                <span class="rank-ud"
+                                    [ngStyle]="{'color': rank.rankDiff < 0 ? '#FF4500' : (rank.rankDiff > 0 ? '#B0FC38' : 'blue')}">{{rank.rankDiff}}</span>
                             </div>
+                        </div>
+                        <div class="image-overlay">
                             <div>
                                 <i class="material-icons" (click)="deleteImage(image.imageID)">delete_forever</i>
                                 <i class="material-icons" (click)="navigateChart(image.imageID)">query_stats</i>
-                                <i class="material-icons">flip_camera_android</i>
-                                <i class="material-icons select-icon button" (click)="toggleTransform(image.imageID , $event)">add</i>
+                                <i class="material-icons" (click)="fileInput.click()">flip_camera_android</i>
+                                <input type="file" #fileInput style="display: none"
+                                    (change)="handleFileChange($event, image.imageID)">
+                                <i class="material-icons select-icon button"
+                                    (click)="toggleTransform(image.imageID , $event)">add</i>
                             </div>
-                           
-                            
                         </div>
-
-
                         <img [src]="image.url" [alt]="'ภาพที่ ' + image.imageID">
                     </div>
                 </div>

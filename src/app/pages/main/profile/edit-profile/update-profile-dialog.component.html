@@ -1,14 +1,18 @@
 <div class="container">
   <div class="row" style="justify-content: flex-start;">
     <!-- <p style="color: black; font-size: 36px; text-align: left; font-weight: 400;">Login to VoteView</p> -->
-    <input #inputField hidden type="file" (click)="inputField.value = ''" />
-    <img class="logo" src="../../../../assets/Image/number-10.png" alt="image" (click)="inputField.click()">
+    <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)">
+    <img class="logo" [src]="userData.image" alt="image" (click)="fileInput.click()">
+    <div *ngIf="selectedImage">
+      <p>Selected Image:</p>
+      <img [src]="selectedImage">
+    </div>
+
     <p class="H_text">Username:</p>
     <mat-form-field class="inp" appearance="outline">
       <mat-label>Enter your username name</mat-label>
-      <input matInput type="text" id="username"  value="{{userData.username}}" #username>
+      <input matInput type="text" id="username" value="{{userData.username}}" #username>
     </mat-form-field>
-
 
     <p class="H_text">Email:</p>
     <mat-form-field class="inp" appearance="outline">
@@ -23,11 +27,12 @@
     </mat-form-field>
   </div>
   <div class="button-container">
-    <button mat-flat-button color="basic" class="custom-button cancel-button">
+    <button mat-flat-button color="basic" class="custom-button cancel-button" (click)="cancel()">
       <mat-icon>cancel</mat-icon> Cancel
     </button>
-    <button mat-flat-button color="primary" class="custom-button edit-button" (click)="changeUsername(username.value , email.value , password.value)">
-      <mat-icon >check_circle</mat-icon> Submit
+    <button mat-flat-button color="primary" class="custom-button edit-button"
+      (click)="changeUsername(username.value , email.value , password.value)">
+      <mat-icon>check_circle</mat-icon> Submit
     </button>
-  </div>  
+  </div>
 </div>

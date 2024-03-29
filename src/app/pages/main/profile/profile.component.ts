@@ -47,6 +47,7 @@ export class ProfileComponent {
   imageCount: number = 0;
   isAddIconTransformed: boolean = false;
   selectedFile: File | undefined;
+  changeimg: File | undefined;
   updatefile: File | undefined;
   uploading: boolean = false;
   userData: User | undefined;
@@ -64,6 +65,11 @@ export class ProfileComponent {
     await this.shareData.getImage(this.id);
     this.images = this.shareData.images;
     this.imageCount = this.images.length;
+    if (this.userData) {
+      console.log('Profile Image URL:', this.userData.image);
+    } else {
+      console.log('No user data available');
+    }
   }
 
   setData() {
@@ -92,6 +98,32 @@ export class ProfileComponent {
 
   handleFileInput(event: any) {
     this.selectedFile = event.target.files[0];
+  }
+
+  handleFileChange(event: any, imageID: number) {
+    const file = event.target.files[0];
+    this.changeimguser(imageID, file);
+  }
+
+  async changeimguser(imageID: number, file: File) {
+    try {
+      this.uploading = true;
+      if (file) {
+        console.log('File uploaded successfully', file);
+        const checkimg = await this.api.ChangeImage(imageID, file);
+        if (checkimg) {
+          // อัปเดตข้อมูลในอนาคต
+          await this.getImage();
+          window.location.reload();
+        } else {
+          console.log('Error', checkimg);
+        }
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    } finally {
+      this.uploading = false;
+    }
   }
 
   async sendFile(userID: string) {
@@ -164,28 +196,6 @@ export class ProfileComponent {
       }
     }
     console.log(this.rank);
-  }
-
-  async uploadProfileImage(event: any) {
-    // // const file = event.target?.files[0];
-    // this.updatefile = event.target.files[0];
-    // try {
-    //   this.uploading = true;
-    //   const uploadedImage = await this.api.uploadImage(
-    //     this.updatefile,
-    //     userID
-    //   );
-    //   console.log('Uploaded image:', uploadedImage);
-    //   await this.getImage();
-    //   this.updatefile = undefined;
-    //   window.alert('Image uploaded successfully');
-    // } catch (error) {
-    //   this.updatefile = undefined;
-    //   console.error('Error uploading image:', error);
-    //   window.alert('Failed to upload image');
-    // } finally {
-    //   this.uploading = false;
-    // }
   }
 
   editProfile(): void {

@@ -5,9 +5,9 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActivatedRoute } from '@angular/router';
-import { User, imageUpload, imageUser, rankID } from '../../model/model';
-import { ApiService } from '../../services/api-service';
-import { ShareService } from '../../services/share.service';
+import { User, imageUpload, imageUser, rankID } from '../../../model/model';
+import { ApiService } from '../../../services/api-service';
+import { ShareService } from '../../../services/share.service';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
@@ -24,10 +24,9 @@ import { MatDialog } from '@angular/material/dialog';
     MatIconModule,
   ],
   templateUrl: './view-profile.component.html',
-  styleUrl: '../main/profile/profile.component.scss',
+  styleUrl: '../profile/profile.component.scss',
 })
 export class ViewProfileComponent {
-  url: string = 'sgshdh';
   constructor(
     private route: ActivatedRoute,
     protected shareData: ShareService,
@@ -50,9 +49,6 @@ export class ViewProfileComponent {
     this.getImage();
     console.log(this.userData);
   }
-
-
-  
 
   checkData() {
     const userDataString = localStorage.getItem('userData');
@@ -125,7 +121,6 @@ export class ViewProfileComponent {
     console.log(this.rank);
   }
 
-
   async setData() {
     this.id = this.route.snapshot.paramMap.get('id');
     this.userData = await this.api.getUserbyId(this.id);
@@ -153,14 +148,12 @@ export class ViewProfileComponent {
     this.router.navigate(['/login']);
   }
 
-
   navigateAdmin() {
-    if(this.shareData.userData?.type == 'owner'){
+    if (this.shareData.userData?.type == 'owner') {
       this.router.navigate(['/admin/' + this.id]);
-    }else{
+    } else {
       this.router.navigate(['/profile']);
     }
-    
   }
 
   navigateTop() {
