@@ -92,15 +92,18 @@ export class UpdateProfileDialogComponent implements OnInit {
       // Display the selected image immediately
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => {
-        this.userData.image = reader.result as string;
+      reader.onload = async () => {
+        const img = await this.api.getProfileUserImage(this.userData.userID);;
+        this.userData.image = img.image;
+        localStorage.setItem('userData', JSON.stringify(this.userData));
+        window.location.reload();
       };
 
       // Store updated userData in local storage
-      localStorage.setItem('userData', JSON.stringify(this.userData));
+    
 
       // Fetch updated user profile
-      await this.api.getProfileUserImage(this.userData.userID); // Assuming this method exists in your API service
+       // Assuming this method exists in your API service
 
       // Show success alert
       window.alert('Profile image updated successfully');
